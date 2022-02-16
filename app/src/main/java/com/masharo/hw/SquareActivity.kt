@@ -1,6 +1,7 @@
 package com.masharo.hw
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleEventObserver
@@ -35,7 +36,9 @@ class SquareActivity : AppCompatActivity() {
         }
 
         lifecycle.addObserver(LifecycleEventObserver { _, b ->
-            LogToFile.print(applicationContext, this::class.java.simpleName + " " + b.name + "\n")
+            val logInfo = "${this::class.java.simpleName}: ${b.name}"
+            LogLifecycle.print(applicationContext, b,"$logInfo\n")
+            Log.i(LogLifecycle.MARKER_LOG, logInfo)
         })
     }
 

@@ -1,14 +1,12 @@
 package com.masharo.hw
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleObserver
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,8 +37,13 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        //В презентации с лекции написано в logcat,
+        //а в основной в фаил ¯\_(ツ)_/¯
+        //https://youtu.be/VeD1x3weUgc?t=3212
         lifecycle.addObserver(LifecycleEventObserver { _, b ->
-            LogToFile.print(applicationContext, this::class.java.simpleName + " " + b.name + "\n")
+            val logInfo = "${this::class.java.simpleName}: ${b.name}"
+            LogLifecycle.print(applicationContext, b,"$logInfo\n")
+            Log.i(LogLifecycle.MARKER_LOG, logInfo)
         })
     }
 

@@ -3,6 +3,7 @@ package com.masharo.hw
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LifecycleEventObserver
 
 class SquareActivity : AppCompatActivity() {
 
@@ -32,6 +33,10 @@ class SquareActivity : AppCompatActivity() {
         value?.let {
             squareValue?.text = (it * it).toString()
         }
+
+        lifecycle.addObserver(LifecycleEventObserver { _, b ->
+            LogToFile.print(applicationContext, this::class.java.simpleName + " " + b.name + "\n")
+        })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

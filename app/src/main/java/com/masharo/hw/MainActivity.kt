@@ -3,8 +3,12 @@ package com.masharo.hw
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleObserver
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,10 +38,14 @@ class MainActivity : AppCompatActivity() {
 
             startActivity(intent)
         }
+
+        lifecycle.addObserver(LifecycleEventObserver { _, b ->
+            LogToFile.print(applicationContext, this::class.java.simpleName + " " + b.name + "\n")
+        })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt(NAME_COUNT, count + 1);
+        outState.putInt(NAME_COUNT, count + 1)
         super.onSaveInstanceState(outState)
     }
 }

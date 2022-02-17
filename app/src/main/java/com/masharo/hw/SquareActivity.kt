@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleEventObserver
+import java.util.*
 
 class SquareActivity : AppCompatActivity() {
 
@@ -54,6 +55,18 @@ class SquareActivity : AppCompatActivity() {
             outState.putInt(VALUE, it)
         }
 
+        outState.putInt(ConfigurationRegistrar.COUNT, ConfigurationRegistrar.count)
+        outState.putInt(ConfigurationRegistrar.CONFIG_HEIGHT, baseContext.resources.displayMetrics.heightPixels)
+        outState.putInt(ConfigurationRegistrar.CONFIG_WIDTH, baseContext.resources.displayMetrics.widthPixels)
+        outState.putString(ConfigurationRegistrar.CONFIG_LANGUAGE, Locale.getDefault().language)
+
         super.onSaveInstanceState(outState)
+    }
+
+    //в этой активити нам не важно где получать count в create или restore
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        ConfigurationRegistrar.isConfigChange(baseContext, savedInstanceState)
+
+        super.onRestoreInstanceState(savedInstanceState)
     }
 }

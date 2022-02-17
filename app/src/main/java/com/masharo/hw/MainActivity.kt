@@ -7,14 +7,10 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleEventObserver
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        private const val NAME_COUNT = "count"
-    }
-
-    private var count: Int = 0
     private var tvCount: TextView? = null
     private var buttonStartSquare: Button? = null
 
@@ -26,13 +22,12 @@ class MainActivity : AppCompatActivity() {
         buttonStartSquare = findViewById(R.id.main_button_startActivitySquare)
 
         savedInstanceState?.let {
-            count = it.getInt(NAME_COUNT, 0)
+            ConfigurationRegistrar.isConfigChange(baseContext, it)
         }
 
-        tvCount?.text = count.toString()
         buttonStartSquare?.setOnClickListener {
             val intent = Intent(applicationContext, SquareActivity::class.java)
-            intent.putExtra(SquareActivity.VALUE, count)
+            intent.putExtra(SquareActivity.VALUE, ConfigurationRegistrar.count)
 
             startActivity(intent)
         }
@@ -47,8 +42,24 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    //при возврате со 2 активности не обновлялось число, так что теперь оно тут а не в create
+    override fun onResume() {
+        tvCount?.text = ConfigurationRegistrar.count.toString()
+
+        super.onResume()
+    }
+
+    //сохраняем данные для проверки изменилась ли конфигурации
+    //не знаю есть ли еще что то что можно назвать изменением конфигурации кроме поворота экрана,
+    //изменения размера и языка
+    //не будет инкрементироваться при повороте если экран квадратный, но я думаю что и не должно
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt(NAME_COUNT, count + 1)
+        outState.putInt(ConfigurationRegistrar.COUNT, ConfigurationRegistrar.count)
+        outState.putInt(ConfigurationRegistrar.CONFIG_HEIGHT, baseContext.resources.displayMetrics.heightPixels)
+        outState.putInt(ConfigurationRegistrar.CONFIG_WIDTH, baseContext.resources.displayMetrics.widthPixels)
+        outState.putString(ConfigurationRegistrar.CONFIG_LANGUAGE, Locale.getDefault().language)
+
         super.onSaveInstanceState(outState)
     }
+
 }

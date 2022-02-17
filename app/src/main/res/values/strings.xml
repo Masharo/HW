@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">HW</string>
     <string name="main_button_textCallActivitySquare">Возвести в квадрат</string>
+    <string name="square_button_backToMain">Вернуться</string>
 </resources>

@@ -21,25 +21,20 @@ object LogLifecycle {
                 writer = FileWriter(File(context.filesDir, FILE_LOG), true)
             }
 
-            writer?.write(info)
+            writer?.let {
+                it.write(info)
+
+                when (event) {
+                    ON_STOP, ON_DESTROY -> {
+                        it.close()
+                        writer = null
+                    }
+                }
+            }
 
         } catch (ex: Exception) {
             //Ничего не делаем
         }
-
-        when (event) {
-            ON_STOP -> {
-                close()
-            }
-            ON_DESTROY -> {
-                close()
-            }
-        }
-    }
-
-    private fun close() {
-        writer?.close()
-        writer = null
     }
 
 }

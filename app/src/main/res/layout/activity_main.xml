@@ -21,6 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10sp"
+        android:paddingVertical="15dp"
         android:text="@string/main_button_textCallActivitySquare"
         app:layout_constraintBottom_toBottomOf="parent" />
 

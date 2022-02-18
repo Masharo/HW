@@ -33,6 +33,14 @@ class SquareActivity : AppCompatActivity() {
             if (it.containsKey(VALUE)) {
                 value = it.getInt(VALUE)
             }
+
+//            if (savedInstanceState.containsKey(MainActivity.COUNT)) {
+//                MainActivity.count = savedInstanceState.getInt(MainActivity.COUNT)
+//            }
+        }
+
+        if (isChangingConfigurations) {
+            MainActivity.count++
         }
 
         value?.let {
@@ -55,18 +63,8 @@ class SquareActivity : AppCompatActivity() {
             outState.putInt(VALUE, it)
         }
 
-        outState.putInt(ConfigurationRegistrar.COUNT, ConfigurationRegistrar.count)
-        outState.putInt(ConfigurationRegistrar.CONFIG_HEIGHT, baseContext.resources.displayMetrics.heightPixels)
-        outState.putInt(ConfigurationRegistrar.CONFIG_WIDTH, baseContext.resources.displayMetrics.widthPixels)
-        outState.putString(ConfigurationRegistrar.CONFIG_LANGUAGE, Locale.getDefault().language)
+        outState.putInt(MainActivity.COUNT, MainActivity.count)
 
         super.onSaveInstanceState(outState)
-    }
-
-    //в этой активити нам не важно где получать count в create или restore
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        ConfigurationRegistrar.isConfigChange(baseContext, savedInstanceState)
-
-        super.onRestoreInstanceState(savedInstanceState)
     }
 }

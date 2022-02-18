@@ -7,12 +7,16 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleEventObserver
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     private var tvCount: TextView? = null
     private var buttonStartSquare: Button? = null
+
+    companion object {
+        const val COUNT = "count"
+        var count: Int = 0
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,14 +26,20 @@ class MainActivity : AppCompatActivity() {
         buttonStartSquare = findViewById(R.id.main_button_startActivitySquare)
 
         savedInstanceState?.let {
-            ConfigurationRegistrar.isConfigChange(baseContext, it)
+            if (savedInstanceState.containsKey(COUNT)) {
+                count = savedInstanceState.getInt(COUNT)
+            }
         }
 
         buttonStartSquare?.setOnClickListener {
             val intent = Intent(applicationContext, SquareActivity::class.java)
-            intent.putExtra(SquareActivity.VALUE, ConfigurationRegistrar.count)
+            intent.putExtra(SquareActivity.VALUE, count)
 
             startActivity(intent)
+        }
+
+        if (isChangingConfigurations) {
+            count++
         }
 
         //В презентации с лекции написано в logcat,
@@ -42,23 +52,21 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    //при возврате со 2 активности не обновлялось число, так что теперь оно тут а не в create
     override fun onResume() {
-        tvCount?.text = ConfigurationRegistrar.count.toString()
+        tvCount?.text = count.toString()
 
         super.onResume()
     }
 
-    //сохраняем данные для проверки изменилась ли конфигурации
-    //не знаю есть ли еще что то что можно назвать изменением конфигурации кроме поворота экрана,
-    //изменения размера и языка
-    //не будет инкрементироваться при повороте если экран квадратный, но я думаю что и не должно
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt(ConfigurationRegistrar.COUNT, ConfigurationRegistrar.count)
-        outState.putInt(ConfigurationRegistrar.CONFIG_HEIGHT, baseContext.resources.displayMetrics.heightPixels)
-        outState.putInt(ConfigurationRegistrar.CONFIG_WIDTH, baseContext.resources.displayMetrics.widthPixels)
-        outState.putString(ConfigurationRegistrar.CONFIG_LANGUAGE, Locale.getDefault().language)
+    override fun onStop() {
+        if (isChangingConfigurations) {
+            count++
+        }
+        super.onStop()
+    }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(COUNT, count)
         super.onSaveInstanceState(outState)
     }
 

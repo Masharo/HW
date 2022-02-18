@@ -39,10 +39,6 @@ class SquareActivity : AppCompatActivity() {
 //            }
         }
 
-        if (isChangingConfigurations) {
-            MainActivity.count++
-        }
-
         value?.let {
             squareValue?.text = (it * it).toString()
         }
@@ -66,5 +62,12 @@ class SquareActivity : AppCompatActivity() {
         outState.putInt(MainActivity.COUNT, MainActivity.count)
 
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onStop() {
+        if (isChangingConfigurations) {
+            MainActivity.count++
+        }
+        super.onStop()
     }
 }

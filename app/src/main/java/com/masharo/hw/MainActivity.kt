@@ -38,10 +38,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        if (isChangingConfigurations) {
-            count++
-        }
-
         //В презентации с лекции написано в logcat,
         //а в основной в фаил ¯\_(ツ)_/¯
         //https://youtu.be/VeD1x3weUgc?t=3212

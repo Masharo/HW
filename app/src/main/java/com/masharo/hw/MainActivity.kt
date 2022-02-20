@@ -13,11 +13,6 @@ class MainActivity : AppCompatActivity() {
     private var tvCount: TextView? = null
     private var buttonStartSquare: Button? = null
 
-    companion object {
-        const val COUNT = "count"
-        var count: Int = 0
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -26,16 +21,22 @@ class MainActivity : AppCompatActivity() {
         buttonStartSquare = findViewById(R.id.main_button_startActivitySquare)
 
         savedInstanceState?.let {
-            if (savedInstanceState.containsKey(COUNT)) {
-                count = savedInstanceState.getInt(COUNT)
+            if (it.containsKey(CountConfigChange.COUNT) &&
+                CountConfigChange.countNotValid()
+            ) {
+                CountConfigChange.count = it.getInt(CountConfigChange.COUNT)
             }
         }
 
+        CountConfigChange.instanceSP(this)
+        CountConfigChange.isConfigChange()
+
         buttonStartSquare?.setOnClickListener {
             val intent = Intent(applicationContext, SquareActivity::class.java)
-            intent.putExtra(SquareActivity.VALUE, count)
+            intent.putExtra(SquareActivity.VALUE, CountConfigChange.count)
 
             startActivity(intent)
+            finish()
         }
 
         //В презентации с лекции написано в logcat,
@@ -49,21 +50,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
-        tvCount?.text = count.toString()
+        tvCount?.text = CountConfigChange.count.toString()
 
         super.onResume()
     }
 
-    override fun onStop() {
-        if (isChangingConfigurations) {
-            count++
-        }
-        super.onStop()
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt(COUNT, count)
+        outState.putInt(CountConfigChange.COUNT, CountConfigChange.count)
         super.onSaveInstanceState(outState)
     }
 
+    override fun onRetainCustomNonConfigurationInstance(): Any? {
+        CountConfigChange.incCount()
+        return super.onRetainCustomNonConfigurationInstance()
+    }
 }

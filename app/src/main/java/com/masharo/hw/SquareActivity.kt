@@ -1,12 +1,12 @@
 package com.masharo.hw
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleEventObserver
-import java.util.*
 
 class SquareActivity : AppCompatActivity() {
 
@@ -34,9 +34,9 @@ class SquareActivity : AppCompatActivity() {
                 value = it.getInt(VALUE)
             }
 
-//            if (savedInstanceState.containsKey(MainActivity.COUNT)) {
-//                MainActivity.count = savedInstanceState.getInt(MainActivity.COUNT)
-//            }
+            if (it.containsKey(CountConfigChange.COUNT)) {
+                CountConfigChange.count = it.getInt(CountConfigChange.COUNT)
+            }
         }
 
         value?.let {
@@ -44,7 +44,10 @@ class SquareActivity : AppCompatActivity() {
         }
 
         buttonBack?.setOnClickListener {
-            this.finish()
+            val intent = Intent(applicationContext, MainActivity::class.java)
+
+            startActivity(intent)
+            finish()
         }
 
         lifecycle.addObserver(LifecycleEventObserver { _, b ->
@@ -52,6 +55,9 @@ class SquareActivity : AppCompatActivity() {
             LogLifecycle.print(applicationContext, b,"$logInfo\n")
             Log.i(LogLifecycle.MARKER_LOG, logInfo)
         })
+
+        CountConfigChange.instanceSP(this)
+        CountConfigChange.isConfigChange()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -59,15 +65,13 @@ class SquareActivity : AppCompatActivity() {
             outState.putInt(VALUE, it)
         }
 
-        outState.putInt(MainActivity.COUNT, MainActivity.count)
+        outState.putInt(CountConfigChange.COUNT, CountConfigChange.count)
 
         super.onSaveInstanceState(outState)
     }
 
-    override fun onStop() {
-        if (isChangingConfigurations) {
-            MainActivity.count++
-        }
-        super.onStop()
+    override fun onRetainCustomNonConfigurationInstance(): Any? {
+        CountConfigChange.incCount()
+        return super.onRetainCustomNonConfigurationInstance()
     }
 }

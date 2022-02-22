@@ -21,9 +21,7 @@ class MainActivity : AppCompatActivity() {
         buttonStartSquare = findViewById(R.id.main_button_startActivitySquare)
 
         savedInstanceState?.let {
-            if (it.containsKey(CountConfigChange.COUNT) &&
-                CountConfigChange.countNotValid()
-            ) {
+            if (it.containsKey(CountConfigChange.COUNT)) {
                 CountConfigChange.count = it.getInt(CountConfigChange.COUNT)
             }
         }

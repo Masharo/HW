@@ -12,8 +12,6 @@ object CountConfigChange {
     var count: Int = 0
     private var sharedPreferences: SharedPreferences? = null
 
-    fun countNotValid() = count == 0
-
     fun instanceSP(context: ContextWrapper) {
         sharedPreferences = context.getSharedPreferences(INC_SAVE, MODE_PRIVATE)
     }
